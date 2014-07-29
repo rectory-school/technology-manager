@@ -4,5 +4,8 @@ from munkimanager.models import StaticManifest, Computer
 class ComputerAdmin(admin.ModelAdmin):
 	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
 
-admin.site.register(StaticManifest)
+class StaticManifestAdmin(admin.ModelAdmin):
+	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
+
+admin.site.register(StaticManifest, StaticManifestAdmin)
 admin.site.register(Computer, ComputerAdmin)
