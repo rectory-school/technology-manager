@@ -60,6 +60,7 @@ class Command(BaseCommand):
 			packageCatalogs = munkiInstallables[name]['catalogs']
 			
 			installable = Installable(name=name, displayName=displayName, uninstallable=uninstallable)
+			installable.save()
 			
 			for catalogName in packageCatalogs:
 				if catalogName not in catalogs:
@@ -68,7 +69,8 @@ class Command(BaseCommand):
 					catalogs[catalogName] = catalog
 				else:
 					catalog = catalogs[catalogName]
-				installable.catalogs.append(catalog)
+				
+				installable.catalogs.add(catalog)
 			
 			installable.save()
 		
