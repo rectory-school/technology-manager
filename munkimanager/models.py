@@ -55,17 +55,30 @@ class StaticManifest(models.Model):
 class AutoEnroll(models.Model):
 	name = models.CharField(max_length=100, verbose_name="Name")
 	
+	
+	catalogs = models.ManyToManyField(Catalog)
 	includedManifests = models.ManyToManyField(StaticManifest, blank=True, related_name='AutoEnrollIncludedManifests', verbose_name="Included Manifests")
 	managedInstalls = models.ManyToManyField(Installable, related_name='AutoEnrollInstalls', blank=True, verbose_name="Managed Installs")
 	managedUninstalls = models.ManyToManyField(Installable, related_name='AutoEnrollUninstalls', limit_choices_to={'uninstallable': True}, blank=True, verbose_name="Managed Uninstalls")
 	optionalInstalls = models.ManyToManyField(Installable, related_name='AutoEnrollOptionalInstalls', blank=True, verbose_name="Optional Installs")
+	
+	requireLanschool = models.BooleanField(default=False, verbose_name="Require LanSchool Name")
+	requireComputerName = models.BooleanField(default=False, verbose_name="Require Computer Name")
+	setDisabled = models.BooleanField(default=True, verbose_name="Disable on import")
+	
+	def __unicode__(self):
+		return self.name
 
+
+	
 class Computer(models.Model):
 	serialNumber = models.CharField(max_length=100, primary_key=True, verbose_name="Serial Number")
 	lanschoolName = models.CharField(max_length=200, blank=True, verbose_name="LanSchool Computer Name")
 	computerName = models.CharField(max_length=50, blank=True, verbose_name="Computer Name")
-	enrolledBy = models.ForeignKey(AutoEnroll, blank=True, null=True)
-
+	enrolledBy = models.ForeignKey(AutoEnroll, blank=True, null=True, verbose_name="Auto Enroll Set")
+	disabled = models.BooleanField(default=False)
+	addedAt = models.DateTimeField(auto_now_add=True)
+	
 	def __unicode__(self):
 		if self.computerName:
 			return "%s (%s)" % (self.computerName, self.serialNumber)

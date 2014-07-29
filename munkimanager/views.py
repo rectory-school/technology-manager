@@ -8,6 +8,9 @@ from . import lib
 def manifest(request, manifestName):
 	try:
 		manifest = Computer.objects.get(pk=manifestName)
+		if manifest.disabled:
+			return HttpResponseNotFound('Computer manifest %s is disabled' % manifestName)
+			
 	except Computer.DoesNotExist:
 		try:
 			manifest = StaticManifest.objects.get(pk=manifestName)
