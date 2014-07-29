@@ -12,7 +12,7 @@ class ComputerAdmin(admin.ModelAdmin):
 	fieldsets = [
 		(None, {'fields': ['serialNumber', 'computerName', 'lanschoolName']}),
 		('Advanced Options', {'fields': ['enrolledBy', 'disabled']}),
-		('Munki Data', {'classes': ('collapse',), 'fields': ['catalogs', 'includedManifests', 'managedInstalls', 'managedUninstalls', 'optionalInstalls']})
+		('Munki Configuration', {'classes': ('collapse',), 'fields': ['catalogs', 'includedManifests', 'managedInstalls', 'managedUninstalls', 'optionalInstalls']})
 	]
 class StaticManifestAdmin(admin.ModelAdmin):
 	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
