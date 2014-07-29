@@ -48,4 +48,11 @@ class Computer(models.Model):
 	managedInstalls = models.ManyToManyField(Installable, related_name='computerInstalls', blank=True, verbose_name="Managed Installs")
 	managedUninstalls = models.ManyToManyField(Installable, related_name='computerUninstalls', limit_choices_to={'uninstallable': True}, blank=True, verbose_name="Managed Uninstalls")
 	optionalInstalls = models.ManyToManyField(Installable, related_name='computerOptionalInstalls', blank=True, verbose_name="Optional Installs")
+
+class AutoLocalUser(models.Model):
+	fullName = models.CharField(max_length=100, verbose_name="Full Name")
+	userName = models.CharField(max_length=20, verbose_name="Username")
+	admin = models.BooleanField(default=False, verbose_name="Admin")
+	forcePasswordReset = models.BooleanField(default=False, verbose_name="Force Password Reset")
+	computer = models.ForeignKey(Computer)
 	
