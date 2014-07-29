@@ -29,6 +29,8 @@ class StaticManifest(models.Model):
 	managedUninstalls = models.ManyToManyField(Installable, related_name='+', limit_choices_to={'uninstallable': True}, blank=True)
 	optionalInstalls = models.ManyToManyField(Installable, related_name='+', blank=True)
 	
+	catalogs = catalogs = models.ManyToManyField(Catalog)
+	
 	def __unicode__(self):
 		if self.description:
 			return "%s (%s)" % (self.manifestName, self.description)
