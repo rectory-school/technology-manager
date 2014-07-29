@@ -1,0 +1,3 @@
+https://www.djangoproject.com/download/1.7c2/tarball/
+psycopg2
+django-websocket-redis
