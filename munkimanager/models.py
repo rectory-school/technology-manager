@@ -16,8 +16,11 @@ class StaticManifest(models.Model):
 	managedInstalls = models.ManyToManyField(Installable, related_name='managed_installs')
 	managedUninstalls = models.ManyToManyField(Installable, related_name='managed_uninstalls', limit_choices_to={'uninstallable': True})
 	optionalInstalls = models.ManyToManyField(Installable, related_name='optional_installs')
+
+	catalogs = models.ManyToManyField(Catalog)
 	
 class Computer(models.Model):
 	serialNumber = models.CharField(max_length=100, primary_key=True)
 	lanschoolName = models.CharField(max_length=200, blank=True)
 	description = models.CharField(max_length=400, blank=True)
+	catalogs = models.ManyToManyField(Catalog)
