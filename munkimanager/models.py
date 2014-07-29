@@ -24,12 +24,12 @@ class StaticManifest(models.Model):
 	manifestName = models.CharField(max_length=100, primary_key=True, verbose_name="Mainfest Name")
 	description = models.CharField(max_length=200, blank=True)
 		
-	includedManifests = models.ManyToManyField('self', blank=True)
-	managedInstalls = models.ManyToManyField(Installable, related_name='+', blank=True)
-	managedUninstalls = models.ManyToManyField(Installable, related_name='+', limit_choices_to={'uninstallable': True}, blank=True)
-	optionalInstalls = models.ManyToManyField(Installable, related_name='+', blank=True)
+	includedManifests = models.ManyToManyField('self', blank=True, related_name='includedInStatic', verbose_name="Included Manifests", symmetrical=False)
+	managedInstalls = models.ManyToManyField(Installable, related_name='staticInstalls', blank=True, verbose_name="Managed Installs")
+	managedUninstalls = models.ManyToManyField(Installable, related_name='staticUninstalls', limit_choices_to={'uninstallable': True}, blank=True, verbose_name="Managed Uninstalls")
+	optionalInstalls = models.ManyToManyField(Installable, related_name='staticOptionalInstalls', blank=True, verbose_name="Optional Installs")
 	
-	catalogs = catalogs = models.ManyToManyField(Catalog)
+	catalogs = catalogs = models.ManyToManyField(Catalog, related_name='+')
 	
 	def __unicode__(self):
 		if self.description:
@@ -44,8 +44,8 @@ class Computer(models.Model):
 	description = models.CharField(max_length=400, blank=True)
 
 	catalogs = models.ManyToManyField(Catalog)	
-	includedManifests = models.ManyToManyField('self', blank=True, verbose_name="Included Manifests")
-	managedInstalls = models.ManyToManyField(Installable, related_name='+', blank=True, verbose_name="Managed Installs")
-	managedUninstalls = models.ManyToManyField(Installable, related_name='+', limit_choices_to={'uninstallable': True}, blank=True, verbose_name="Managed Uninstalls")
-	optionalInstalls = models.ManyToManyField(Installable, related_name='+', blank=True, verbose_name="Optional Installs")
+	includedManifests = models.ManyToManyField(StaticManifest, blank=True, related_name='includedInComputer', verbose_name="Included Manifests")
+	managedInstalls = models.ManyToManyField(Installable, related_name='computerInstalls', blank=True, verbose_name="Managed Installs")
+	managedUninstalls = models.ManyToManyField(Installable, related_name='computerUninstalls', limit_choices_to={'uninstallable': True}, blank=True, verbose_name="Managed Uninstalls")
+	optionalInstalls = models.ManyToManyField(Installable, related_name='computerOptionalInstalls', blank=True, verbose_name="Optional Installs")
 	
