@@ -8,6 +8,8 @@ class Installable(models.Model):
 	displayName = models.CharField(max_length=400, blank=True)
 	uninstallable = models.BooleanField(default=False)
 	
+	catalogs = models.ManyToManyField(Catalog)
+	
 class StaticManifest(models.Model):
 	manifestName = models.CharField(max_length=100, primary_key=True)
 	description = models.CharField(max_length=200, blank=True)
@@ -16,8 +18,6 @@ class StaticManifest(models.Model):
 	managedInstalls = models.ManyToManyField(Installable, related_name='managed_installs')
 	managedUninstalls = models.ManyToManyField(Installable, related_name='managed_uninstalls', limit_choices_to={'uninstallable': True})
 	optionalInstalls = models.ManyToManyField(Installable, related_name='optional_installs')
-
-	catalogs = models.ManyToManyField(Catalog)
 	
 class Computer(models.Model):
 	serialNumber = models.CharField(max_length=100, primary_key=True)
