@@ -3,6 +3,12 @@ from django.db import models
 class Catalog(models.Model):
 	name = models.CharField(max_length=254, primary_key=True)
 	
+	class Meta:
+		ordering = ['name']
+	
+	def getName(self):
+		return self.name
+	
 	def __unicode__(self):
 		return self.name
 	
@@ -13,7 +19,11 @@ class Installable(models.Model):
 	
 	catalogs = models.ManyToManyField(Catalog)
 	
-	ordering = ['name']
+	class Meta:
+		ordering = ['name']
+	
+	def getName(self):
+		return self.name
 	
 	def __unicode__(self):
 		if self.displayName:
@@ -31,6 +41,12 @@ class StaticManifest(models.Model):
 	
 	catalogs = catalogs = models.ManyToManyField(Catalog, related_name='+')
 	
+	class Meta:
+		ordering = ['manifestName']
+	
+	def getName(self):
+		return self.manifestName
+	
 	def __unicode__(self):
 		if self.description:
 			return "%s (%s)" % (self.manifestName, self.description)
@@ -40,6 +56,17 @@ class Computer(models.Model):
 	serialNumber = models.CharField(max_length=100, primary_key=True, verbose_name="Serial Number")
 	lanschoolName = models.CharField(max_length=200, blank=True, verbose_name="LanSchool Computer Name")
 	computerName = models.CharField(max_length=50, blank=True, verbose_name="Computer Name")
+	
+	def __unicode__(self):
+		if self.computerName:
+			return "%s (%s)" % (self.computerName, self.serialNumber)
+		if self.lanschoolName:
+			return "%s (%s)" % (self.lanschoolName, self.serialNumber)
+		
+		return self.serialNumber
+
+	class Meta:
+		ordering = ['computerName', 'serialNumber']
 	
 	description = models.CharField(max_length=400, blank=True)
 
