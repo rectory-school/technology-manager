@@ -62,6 +62,7 @@ ROOT_URLCONF = 'intake_server.urls'
 
 WSGI_APPLICATION = 'intake_server.wsgi.application'
 
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases

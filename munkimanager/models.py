@@ -53,18 +53,21 @@ class StaticManifest(models.Model):
 		return self.manifestName
 
 class AutoEnroll(models.Model):
-	name = models.CharField(max_length=100, verbose_name="Name")
+	name = models.CharField(max_length=100, verbose_name="Name", primary_key=True)
 	
-	
-	catalogs = models.ManyToManyField(Catalog)
+	catalogs = models.ManyToManyField(Catalog, blank=True)
 	includedManifests = models.ManyToManyField(StaticManifest, blank=True, related_name='AutoEnrollIncludedManifests', verbose_name="Included Manifests")
 	managedInstalls = models.ManyToManyField(Installable, related_name='AutoEnrollInstalls', blank=True, verbose_name="Managed Installs")
 	managedUninstalls = models.ManyToManyField(Installable, related_name='AutoEnrollUninstalls', limit_choices_to={'uninstallable': True}, blank=True, verbose_name="Managed Uninstalls")
 	optionalInstalls = models.ManyToManyField(Installable, related_name='AutoEnrollOptionalInstalls', blank=True, verbose_name="Optional Installs")
 	
+	selectableInstalls = models.ManyToManyField(Installable, related_name="AutoEnrollSelectableInstalls", blank=True, verbose_name="Web Selectable Installs")
+	
 	requireLanschool = models.BooleanField(default=False, verbose_name="Require LanSchool Name")
 	requireComputerName = models.BooleanField(default=False, verbose_name="Require Computer Name")
 	setEnabled = models.BooleanField(default=False, verbose_name="Enable on import")
+	
+	enrollmentAllowed = models.BooleanField(default=True, verbose_name="Allow web enrollment")
 	
 	class Meta:
 		verbose_name="Enrollment Set"
@@ -87,15 +90,17 @@ class Computer(models.Model):
 			return "%s (%s)" % (self.computerName, self.serialNumber)
 		if self.lanschoolName:
 			return "%s (%s)" % (self.lanschoolName, self.serialNumber)
+		if self.description:
+			return "%s (%s)" % (self.description, self.serialNumber)
 		
 		return self.serialNumber
 
 	class Meta:
-		ordering = ['computerName', 'lanschoolName', 'serialNumber']
+		ordering = ['computerName', 'lanschoolName', 'description', 'serialNumber']
 	
 	description = models.CharField(max_length=400, blank=True)
 
-	catalogs = models.ManyToManyField(Catalog)
+	catalogs = models.ManyToManyField(Catalog, blank=True)
 	
 	includedManifests = models.ManyToManyField(StaticManifest, blank=True, related_name='includedInComputer', verbose_name="Included Manifests")
 	managedInstalls = models.ManyToManyField(Installable, related_name='computerInstalls', blank=True, verbose_name="Managed Installs")
@@ -111,4 +116,13 @@ class AutoLocalUser(models.Model):
 	
 	def __unicode__(self):
 		return "%s on %s" % (self.fullName, self.computer)
+
+class LanSchoolNameOption(models.Model):
+	lanschoolName = models.CharField(max_length=100, verbose_name="Lanschool Name")
+	
+	class Meta:
+		ordering = ['lanschoolName']
+	
+	def __unicode__(self):
+		return self.lanschoolName
 	

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+  <head>
+    <title>Rectory School Intake Manager Data Request</title>
+  </head>
+  <body>
+    <p>Serial Number: {{serial}}</p>
+	
+	{% if requireComputerName or requireLanSchoolName %}
+	
+		<form method="POST" action=".">{% csrf_token %}
+	
+			{% if requireComputerName %}
+				<p><label for="computerName">Computer Name</label><br /><input name="computerName" type="text"/></p>
+			{% endif %}
+	
+			{% if requireLanSchoolName %}
+				<p><label for="lanschoolName">Lanschool Name</label><br />
+					<select name="lanschoolName" type="text">
+						<option value="">--</option>
+						{% for option in lanschoolChoices %}
+						<option value="{{ option }}">{{ option }}</option>
+						{% endfor %}
+					</select>
+				</p>
+			{% endif %}
+		
+			<p><input type="submit" /></p>
+		{% else %}
+			
+			{% for install in availableInstalls %}
+			<form action="{% url 'munki-select-install' serial %}" method="POST">{% csrf_token %}
+				<input type="hidden" name="installName" value="{{ install.name }}">
+				<p><input type="submit" value="Install {{ install }}"/></p>
+			</form>
+			{% endfor %}
+		{% endif %}
+	</form>
+  </body>
+</html>

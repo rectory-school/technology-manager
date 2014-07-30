@@ -1,5 +1,5 @@
 from django.contrib import admin
-from munkimanager.models import StaticManifest, Computer, AutoLocalUser, AutoEnroll
+from munkimanager.models import StaticManifest, Computer, AutoLocalUser, AutoEnroll, LanSchoolNameOption
 from django.utils.html import format_html
 import ago
 from datetime import datetime
@@ -15,11 +15,11 @@ class ComputerAdmin(admin.ModelAdmin):
 	
 	fieldsets = [
 		(None, {'fields': ['serialNumber', 'computerName', 'lanschoolName']}),
-		('Advanced Options', {'fields': ['enrollmentSet', 'enabled']}),
+		('Advanced Options', {'fields': ['enrollmentSet', 'enabled', 'description']}),
 		('Munki Configuration', {'classes': ('collapse',), 'fields': ['catalogs', 'includedManifests', 'managedInstalls', 'managedUninstalls', 'optionalInstalls']})
 	]
 	
-	list_display=["__str__", 'enabled',  'lastSeen', 'enrollmentSet', 'displayIncludedManifests']
+	list_display=["__str__", 'enabled',  'lastSeen', 'enrollmentSet']
 	
 	def enable(self, request, queryset):
 		queryset.update(enabled=True)
@@ -28,27 +28,27 @@ class ComputerAdmin(admin.ModelAdmin):
 		queryset.update(enabled=False)
 	
 	def lastSeen(self, obj):
-		return ago.human(datetime.now(pytz.utc) - obj.lastGrabbed, precision=1)
+		if obj.lastGrabbed:
+			return ago.human(datetime.now(pytz.utc) - obj.lastGrabbed, precision=1)
+		return "Never"
 	
 	lastSeen.short_description = "Manifest Last Downloaded"
-	
-	def displayIncludedManifests(self, obj):
-		return format_html(u"<br />".join([m.manifestName for m in obj.includedManifests.all()]))
-	
-	displayIncludedManifests.short_description = "Included Manifests"
+
 	list_filter = ['enabled', 'enrollmentSet']
 	
 	enable.short_description = "Enable selected computers"
 	disable.short_description = "Disable selected computers"
 	
 	actions = ['enable', 'disable']
+
 class StaticManifestAdmin(admin.ModelAdmin):
 	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
 
 class AutoEnrollAdmin(admin.ModelAdmin):
-	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
+	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls', 'selectableInstalls']
 	
 
 admin.site.register(StaticManifest, StaticManifestAdmin)
 admin.site.register(Computer, ComputerAdmin)
 admin.site.register(AutoEnroll, AutoEnrollAdmin)
+admin.site.register(LanSchoolNameOption, admin.ModelAdmin)
