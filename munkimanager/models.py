@@ -66,6 +66,10 @@ class AutoEnroll(models.Model):
 	requireComputerName = models.BooleanField(default=False, verbose_name="Require Computer Name")
 	setEnabled = models.BooleanField(default=False, verbose_name="Enable on import")
 	
+	class Meta:
+		verbose_name="Enrollment Set"
+		verbose_name_plural = "Enrollment Sets"
+	
 	def __unicode__(self):
 		return self.name
 
@@ -73,7 +77,7 @@ class Computer(models.Model):
 	serialNumber = models.CharField(max_length=100, primary_key=True, verbose_name="Serial Number")
 	lanschoolName = models.CharField(max_length=200, blank=True, verbose_name="LanSchool Computer Name")
 	computerName = models.CharField(max_length=50, blank=True, verbose_name="Computer Name")
-	enrolledBy = models.ForeignKey(AutoEnroll, blank=True, null=True, verbose_name="Auto Enroll Set")
+	enrollmentSet = models.ForeignKey(AutoEnroll, blank=True, null=True, verbose_name="Enrollment Set")
 	enabled = models.BooleanField(default=True)
 	addedAt = models.DateTimeField(auto_now_add=True)
 	lastGrabbed = models.DateTimeField(blank=True, null=True)

@@ -15,11 +15,11 @@ class ComputerAdmin(admin.ModelAdmin):
 	
 	fieldsets = [
 		(None, {'fields': ['serialNumber', 'computerName', 'lanschoolName']}),
-		('Advanced Options', {'fields': ['enrolledBy', 'enabled']}),
+		('Advanced Options', {'fields': ['enrollmentSet', 'enabled']}),
 		('Munki Configuration', {'classes': ('collapse',), 'fields': ['catalogs', 'includedManifests', 'managedInstalls', 'managedUninstalls', 'optionalInstalls']})
 	]
 	
-	list_display=["__str__", 'enabled',  'lastSeen', 'displayIncludedManifests']
+	list_display=["__str__", 'enabled',  'lastSeen', 'enrollmentSet', 'displayIncludedManifests']
 	
 	def enable(self, request, queryset):
 		queryset.update(enabled=True)
@@ -36,7 +36,7 @@ class ComputerAdmin(admin.ModelAdmin):
 		return format_html(u"<br />".join([m.manifestName for m in obj.includedManifests.all()]))
 	
 	displayIncludedManifests.short_description = "Included Manifests"
-	list_filter = ['enabled', 'enrolledBy']
+	list_filter = ['enabled', 'enrollmentSet']
 	
 	enable.short_description = "Enable selected computers"
 	disable.short_description = "Disable selected computers"

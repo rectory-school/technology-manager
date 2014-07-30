@@ -1,27 +1,34 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 from datetime import datetime
+
 from munkimanager.models import Computer, StaticManifest
+
 from . import lib
 
+import plistlib
 import json
 
 # Create your views here.
 def manifest(request, manifestName):
 	try:
-		manifest = Computer.objects.get(pk=manifestName)
-		manifest.lastGrabbed = datetime.now()
-		manifest.save()
-		if not manifest.enabled:
+		computer = Computer.objects.get(pk=manifestName)
+		computer.lastGrabbed = datetime.now()
+		computer.save()
+		if not computer.enabled:
 			return HttpResponseNotFound('Computer manifest %s is disabled' % manifestName)
+			
+		manifestData = lib.computerManifest(computer)
 			
 	except Computer.DoesNotExist:
 		try:
-			manifest = StaticManifest.objects.get(pk=manifestName)
+			staticManifest = StaticManifest.objects.get(pk=manifestName)
+			manifestData = lib.staticManifest(staticManifest)
 		except StaticManifest.DoesNotExist:
 			return HttpResponseNotFound('Manifest %s not found' % manifestName)
+	
 			
-	return HttpResponse(lib.makeManifest(manifest), content_type="text/plain")
+	return HttpResponse(plistlib.writePlistToString(manifestData), content_type="text/plain")
 	
 def computerInfo(request, serialNumber):
 	try:
