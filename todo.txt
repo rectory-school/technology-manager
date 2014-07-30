@@ -1,0 +1,5 @@
+TODO
+- Package to check the computer name against the database
+- Package to check the lanschool name against the database
+- Package to check the local users against the database
+- Create the auto enrollment system
