@@ -64,20 +64,19 @@ class AutoEnroll(models.Model):
 	
 	requireLanschool = models.BooleanField(default=False, verbose_name="Require LanSchool Name")
 	requireComputerName = models.BooleanField(default=False, verbose_name="Require Computer Name")
-	setDisabled = models.BooleanField(default=True, verbose_name="Disable on import")
+	setEnabled = models.BooleanField(default=False, verbose_name="Enable on import")
 	
 	def __unicode__(self):
 		return self.name
 
-
-	
 class Computer(models.Model):
 	serialNumber = models.CharField(max_length=100, primary_key=True, verbose_name="Serial Number")
 	lanschoolName = models.CharField(max_length=200, blank=True, verbose_name="LanSchool Computer Name")
 	computerName = models.CharField(max_length=50, blank=True, verbose_name="Computer Name")
 	enrolledBy = models.ForeignKey(AutoEnroll, blank=True, null=True, verbose_name="Auto Enroll Set")
-	disabled = models.BooleanField(default=False)
+	enabled = models.BooleanField(default=True)
 	addedAt = models.DateTimeField(auto_now_add=True)
+	lastGrabbed = models.DateTimeField(blank=True, null=True)
 	
 	def __unicode__(self):
 		if self.computerName:
@@ -88,7 +87,7 @@ class Computer(models.Model):
 		return self.serialNumber
 
 	class Meta:
-		ordering = ['computerName', 'serialNumber']
+		ordering = ['computerName', 'lanschoolName', 'serialNumber']
 	
 	description = models.CharField(max_length=400, blank=True)
 
@@ -104,5 +103,8 @@ class AutoLocalUser(models.Model):
 	userName = models.CharField(max_length=20, verbose_name="Username")
 	admin = models.BooleanField(default=False, verbose_name="Admin")
 	forcePasswordReset = models.BooleanField(default=False, verbose_name="Force Password Reset")
-	computer = models.ForeignKey(Computer)	
+	computer = models.ForeignKey(Computer)
+	
+	def __unicode__(self):
+		return "%s on %s" % (self.fullName, self.computer)
 	
