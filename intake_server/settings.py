@@ -38,9 +38,7 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 )
 
-THIRD_PARTY_APPS = (
-	'ws4redis', 
-)
+THIRD_PARTY_APPS = tuple()
 
 INTERNAL_APPS = (
 	'munkimanager', 
