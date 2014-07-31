@@ -34,12 +34,12 @@ class StaticManifest(models.Model):
 	manifestName = models.CharField(max_length=100, primary_key=True, verbose_name="Mainfest Name")
 	description = models.CharField(max_length=200, blank=True)
 		
+	catalogs = catalogs = models.ManyToManyField(Catalog, related_name='+', blank=True)
+	
 	includedManifests = models.ManyToManyField('self', blank=True, related_name='includedInStatic', verbose_name="Included Manifests", symmetrical=False)
 	managedInstalls = models.ManyToManyField(Installable, related_name='staticInstalls', blank=True, verbose_name="Managed Installs")
 	managedUninstalls = models.ManyToManyField(Installable, related_name='staticUninstalls', limit_choices_to={'uninstallable': True}, blank=True, verbose_name="Managed Uninstalls")
 	optionalInstalls = models.ManyToManyField(Installable, related_name='staticOptionalInstalls', blank=True, verbose_name="Optional Installs")
-	
-	catalogs = catalogs = models.ManyToManyField(Catalog, related_name='+')
 	
 	class Meta:
 		ordering = ['manifestName']
