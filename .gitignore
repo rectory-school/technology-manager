@@ -1,2 +1,3 @@
 *.pyc
 importall.sh
+environment.py
