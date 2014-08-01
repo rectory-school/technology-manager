@@ -35,7 +35,7 @@ class ComputerAdmin(admin.ModelAdmin):
 		return "Never"
 	
 	lastSeen.short_description = "Manifest Last Downloaded"
-	lastSeen.admin_order_field = 'lastGrabbed'
+	lastSeen.admin_order_field = '-lastGrabbed'
 	
 	list_filter = ['enabled', 'enrollmentSet']
 	
