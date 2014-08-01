@@ -3,6 +3,10 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseNotAllow
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 import pytz
+import os
+from django.conf import settings
+
+from base64 import b64encode
 
 from munkimanager.models import Computer, StaticManifest, AutoEnroll, LanSchoolNameOption
 
@@ -55,8 +59,15 @@ def computerInfo(request, serialNumber):
 			data[key] = value
 	
 	for localUser in computer.autolocaluser_set.all():
-		data['localUsers'].append({'Full Name': localUser.fullName, 'Username': localUser.userName, 'admin': localUser.admin, 'expirePassword': localUser.forcePasswordReset})
-	
+		localUserDict = {'Full Name': localUser.fullName, 'Username': localUser.userName, 'admin': localUser.admin, 'expirePassword': localUser.forcePasswordReset}
+		if localUser.userIcon:
+			localUser.userIcon.open(mode='rb')
+			imageData = localUser.userIcon.read()
+			localUserDict['iconData'] = b64encode(imageData)
+			localUserDict['iconFileName'] = localUser.userIcon.url
+			
+		data['localUsers'].append(localUserDict)
+		
 	return HttpResponse(json.dumps(data), content_type="application/json")
 
 @csrf_exempt

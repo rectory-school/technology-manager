@@ -112,6 +112,7 @@ class AutoLocalUser(models.Model):
 	userName = models.CharField(max_length=20, verbose_name="Username")
 	admin = models.BooleanField(default=False, verbose_name="Admin")
 	forcePasswordReset = models.BooleanField(default=False, verbose_name="Force Password Reset")
+	userIcon = models.ImageField(blank=True, verbose_name="User Icon")
 	computer = models.ForeignKey(Computer)
 	
 	def __unicode__(self):
