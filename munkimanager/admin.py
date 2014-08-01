@@ -4,12 +4,14 @@ from django.utils.html import format_html
 import ago
 from datetime import datetime
 import pytz
+from django.core.urlresolvers import reverse
 
 class LocalUserInline(admin.TabularInline):
 	model = AutoLocalUser
 
 class ComputerAdmin(admin.ModelAdmin):
 	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
+	search_fields = ['serialNumber', 'computerName', 'lanschoolName']
 	
 	inlines = [LocalUserInline]
 	
@@ -33,13 +35,17 @@ class ComputerAdmin(admin.ModelAdmin):
 		return "Never"
 	
 	lastSeen.short_description = "Manifest Last Downloaded"
-
+	lastSeen.admin_order_field = 'lastGrabbed'
+	
 	list_filter = ['enabled', 'enrollmentSet']
 	
 	enable.short_description = "Enable selected computers"
 	disable.short_description = "Disable selected computers"
 	
 	actions = ['enable', 'disable']
+	
+	def view_on_site(self, obj):
+		return reverse('munki-manifest', args=(obj.serialNumber, ))
 
 class StaticManifestAdmin(admin.ModelAdmin):
 	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
