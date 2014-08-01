@@ -1,0 +1,16 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+{% block object-tools-items %}
+    <li>
+        <a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a>
+    </li>
+    <li>
+        <a href="{% url 'munki-manifest' original.pk %}" class="historylink">Manifest</a>
+    </li>
+    <li>
+        <a href="{% url 'munki-computer-info' original.pk %}" class="historylink">Computer Info</a>
+    </li>
+    <li>
+        <a href="/reporting/rectory-devices/clients/detail/{{ original.serialNumber }}" class="historylink">MunkiReport - Rectory</a>
+    </li>
+{% endblock %}

@@ -43,9 +43,6 @@ class ComputerAdmin(admin.ModelAdmin):
 	disable.short_description = "Disable selected computers"
 	
 	actions = ['enable', 'disable']
-	
-	def view_on_site(self, obj):
-		return reverse('munki-manifest', args=(obj.serialNumber, ))
 
 class StaticManifestAdmin(admin.ModelAdmin):
 	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
