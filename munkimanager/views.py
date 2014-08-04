@@ -53,7 +53,7 @@ def computerInfo(request, serialNumber):
 	
 	data = {'localUsers': []}
 	
- 	for key in ('serialNumber', 'lanschoolName', 'computerName', 'disabled'):
+ 	for key in ('serialNumber', 'lanschoolName', 'computerName', 'disabled', 'lanschoolChannel'):
 		value = getattr(computer, key, None)
 		if value:
 			data[key] = value

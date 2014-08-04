@@ -17,7 +17,7 @@ class ComputerAdmin(admin.ModelAdmin):
 	
 	fieldsets = [
 		(None, {'fields': ['serialNumber', 'computerName', 'lanschoolName']}),
-		('Advanced Options', {'fields': ['enrollmentSet', 'enabled', 'description']}),
+		('Advanced Options', {'fields': ['enrollmentSet', 'enabled', 'description', 'lanschoolChannel']}),
 		('Munki Configuration', {'classes': ('collapse',), 'fields': ['catalogs', 'includedManifests', 'managedInstalls', 'managedUninstalls', 'optionalInstalls']})
 	]
 	

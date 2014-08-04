@@ -79,6 +79,7 @@ class AutoEnroll(models.Model):
 class Computer(models.Model):
 	serialNumber = models.CharField(max_length=100, primary_key=True, verbose_name="Serial Number")
 	lanschoolName = models.CharField(max_length=200, blank=True, verbose_name="LanSchool Computer Name")
+	lanschoolChannel = models.IntegerField(blank=True, null=True, verbose_name="LanSchool Channel")
 	computerName = models.CharField(max_length=50, blank=True, verbose_name="Computer Name")
 	enrollmentSet = models.ForeignKey(AutoEnroll, blank=True, null=True, verbose_name="Enrollment Set")
 	enabled = models.BooleanField(default=True)
