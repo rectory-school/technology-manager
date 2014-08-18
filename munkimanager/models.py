@@ -78,26 +78,24 @@ class AutoEnroll(models.Model):
 
 class Computer(models.Model):
 	serialNumber = models.CharField(max_length=100, primary_key=True, verbose_name="Serial Number")
-	lanschoolName = models.CharField(max_length=200, blank=True, verbose_name="LanSchool Computer Name")
 	lanschoolChannel = models.IntegerField(blank=True, null=True, verbose_name="LanSchool Channel")
 	computerName = models.CharField(max_length=50, blank=True, verbose_name="Computer Name")
 	enrollmentSet = models.ForeignKey(AutoEnroll, blank=True, null=True, verbose_name="Enrollment Set")
 	enabled = models.BooleanField(default=True)
 	addedAt = models.DateTimeField(auto_now_add=True)
 	lastGrabbed = models.DateTimeField(blank=True, null=True)
+	studentID = models.CharField(max_length=10, blank=True)
 	
 	def __unicode__(self):
 		if self.computerName:
 			return "%s (%s)" % (self.computerName, self.serialNumber)
-		if self.lanschoolName:
-			return "%s (%s)" % (self.lanschoolName, self.serialNumber)
 		if self.description:
 			return "%s (%s)" % (self.description, self.serialNumber)
 		
 		return self.serialNumber
 
 	class Meta:
-		ordering = ['computerName', 'lanschoolName', 'description', 'serialNumber']
+		ordering = ['computerName', 'description', 'serialNumber']
 	
 	description = models.CharField(max_length=400, blank=True)
 
@@ -120,7 +118,27 @@ class AutoLocalUser(models.Model):
 		return "%s on %s" % (self.fullName, self.computer)
 
 class LanSchoolNameOption(models.Model):
+	GRADE_CHOICES = (
+		('-', 'Unknown/Other'),
+		('K', 'Kindergarden'),
+		('1', 'First Grade'),
+		('2', 'Second Grade'),
+		('3', 'Third Grade'),
+		('4', 'Fourth Grade'),
+		('5', 'Fifth Grade'),
+		('6', 'Sixth Grade'),
+		('7', 'Seventh Grade'),
+		('8', 'Eigth Grade'),
+		('9', 'Ninth Grade'),
+	)
+	
+	BOARDER_CHOICES = ((True, 'Boarding Student'), (False, 'Day Student'))
+	
+	
 	lanschoolName = models.CharField(max_length=100, verbose_name="Lanschool Name")
+	grade = models.CharField(max_length=1, choices=GRADE_CHOICES, default='-')
+	boarder = models.BooleanField(choices=BOARDER_CHOICES, default=False, verbose_name="Boarder/Day")
+	studentID = models.CharField(max_length=10, unique=True)
 	
 	class Meta:
 		ordering = ['lanschoolName']

@@ -21,11 +21,11 @@
 			{% endif %}
 	
 			{% if requireLanSchoolName %}
-				<p><label for="lanschoolName">Lanschool Name</label><br />
-					<select name="lanschoolName" type="text">
+				<p><label for="studentID">Lanschool Name</label><br />
+					<select name="studentID" type="text">
 						<option value="">--</option>
 						{% for option in lanschoolChoices %}
-						<option value="{{ option }}">{{ option }}</option>
+						<option value="{{ option.studentID }}">{{ option.lanschoolName }}</option>
 						{% endfor %}
 					</select>
 				</p>

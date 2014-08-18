@@ -5,3 +5,4 @@ pytz
 biplist
 requests
 pillow
+xlrd

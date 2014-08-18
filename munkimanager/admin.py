@@ -11,12 +11,12 @@ class LocalUserInline(admin.TabularInline):
 
 class ComputerAdmin(admin.ModelAdmin):
 	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
-	search_fields = ['serialNumber', 'computerName', 'lanschoolName']
+	search_fields = ['serialNumber', 'computerName']
 	
 	inlines = [LocalUserInline]
 	
 	fieldsets = [
-		(None, {'fields': ['serialNumber', 'computerName', 'lanschoolName']}),
+		(None, {'fields': ['serialNumber', 'computerName', 'studentID']}),
 		('Advanced Options', {'fields': ['enrollmentSet', 'enabled', 'description', 'lanschoolChannel']}),
 		('Munki Configuration', {'classes': ('collapse',), 'fields': ['catalogs', 'includedManifests', 'managedInstalls', 'managedUninstalls', 'optionalInstalls']})
 	]

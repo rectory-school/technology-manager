@@ -53,10 +53,17 @@ def computerInfo(request, serialNumber):
 	
 	data = {'localUsers': []}
 	
- 	for key in ('serialNumber', 'lanschoolName', 'computerName', 'disabled', 'lanschoolChannel'):
+ 	for key in ('serialNumber', 'computerName', 'disabled', 'lanschoolChannel'):
 		value = getattr(computer, key, None)
 		if value:
 			data[key] = value
+	
+	if computer.studentID:
+		try:
+			lsNameOption = LanSchoolNameOption.objects.get(studentID=computer.studentID)
+			data['lanschoolName'] = lsNameOption.lanschoolName
+		except LanSchoolNameOption.DoesNotExist:
+			pass
 	
 	for localUser in computer.autolocaluser_set.all():
 		localUserDict = {'Full Name': localUser.fullName, 'Username': localUser.userName, 'admin': localUser.admin, 'expirePassword': localUser.forcePasswordReset}
@@ -122,12 +129,12 @@ def enrollmentRequest(request, serialNumber):
 		return HttpResponseBadRequest("Enrollment set is not accepting new enrollments")
 	
 	if request.method == 'POST':
-		lanschoolName = request.POST.get("lanschoolName", None)
+		studentID = request.POST.get("studentID", None)
 		computerName = request.POST.get("computerName", None)
 		changed = False
 		
-		if computer.enrollmentSet.requireLanschool and not computer.lanschoolName and lanschoolName:
-			computer.lanschoolName = lanschoolName
+		if computer.enrollmentSet.requireLanschool and not computer.studentID and studentID:
+			computer.studentID = studentID
 			changed = True
 			
 		if computer.enrollmentSet.requireComputerName and not computer.computerName and computerName:
@@ -142,7 +149,7 @@ def enrollmentRequest(request, serialNumber):
 		
 	data = {'serial': serialNumber, 'availableInstalls': []}
 	
-	if computer.enrollmentSet.requireLanschool and not computer.lanschoolName:
+	if computer.enrollmentSet.requireLanschool and not computer.studentID:
 		data['requireLanSchoolName'] = True
 		data['lanschoolChoices'] = LanSchoolNameOption.objects.all()
 		
@@ -151,6 +158,8 @@ def enrollmentRequest(request, serialNumber):
 	
 	if (datetime.now(pytz.utc) - computer.addedAt) < MAX_WEB_SELECTABLE_INSTALL_TIME:
 		selectableInstalls = set(list(computer.enrollmentSet.selectableInstalls.all()))
+	else:
+		selectableInstalls = set()
 	
 	alreadyInstalled = set(list(computer.managedInstalls.all()))
 		
