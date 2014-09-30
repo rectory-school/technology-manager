@@ -11,7 +11,7 @@ class LocalUserInline(admin.TabularInline):
 
 class ComputerAdmin(admin.ModelAdmin):
 	filter_horizontal = ['managedInstalls', 'managedUninstalls', 'includedManifests', 'catalogs', 'optionalInstalls']
-	search_fields = ['serialNumber', 'computerName']
+	search_fields = ['serialNumber', 'computerName', 'studentID']
 	
 	inlines = [LocalUserInline]
 	
