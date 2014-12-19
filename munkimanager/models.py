@@ -68,6 +68,8 @@ class AutoEnroll(models.Model):
 	setEnabled = models.BooleanField(default=False, verbose_name="Enable on import")
 	
 	enrollmentAllowed = models.BooleanField(default=True, verbose_name="Allow web enrollment")
+
+	assignLanschoolChannel = models.BooleanField(default=False, verbose_name="Automatically assign a LanSchool Channel")
 	
 	class Meta:
 		verbose_name="Enrollment Set"
@@ -105,6 +107,10 @@ class Computer(models.Model):
 	managedInstalls = models.ManyToManyField(Installable, related_name='computerInstalls', blank=True, verbose_name="Managed Installs")
 	managedUninstalls = models.ManyToManyField(Installable, related_name='computerUninstalls', limit_choices_to={'uninstallable': True}, blank=True, verbose_name="Managed Uninstalls")
 	optionalInstalls = models.ManyToManyField(Installable, related_name='computerOptionalInstalls', blank=True, verbose_name="Optional Installs")
+	
+	def clean(self):
+		if self.enrollmentSet.assignLanschoolChannel and not self.lanschoolChannel:
+			self.lanschoolChannel = Computer.objects.all().aggregate(models.Max('lanschoolChannel'))['lanschoolChannel__max'] + 1
 
 class AutoLocalUser(models.Model):
 	fullName = models.CharField(max_length=100, verbose_name="Full Name")
