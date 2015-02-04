@@ -1,5 +1,5 @@
 """
-Django settings for intake_server project.
+Django settings for technology_manager project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/dev/topics/settings/
@@ -49,9 +49,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'intake_server.urls'
+ROOT_URLCONF = 'technology_manager.urls'
 
-WSGI_APPLICATION = 'intake_server.wsgi.application'
+WSGI_APPLICATION = 'technology_manager.wsgi.application'
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
