@@ -35,6 +35,7 @@ THIRD_PARTY_APPS = tuple()
 
 INTERNAL_APPS = (
 	'munkimanager', 
+  'syncthingmanager',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + INTERNAL_APPS
