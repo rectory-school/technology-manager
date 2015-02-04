@@ -1,5 +1,5 @@
 """
-WSGI config for intake_server project.
+WSGI config for technology_manager project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/
 """
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "intake_server.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "technology_manager.settings")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
