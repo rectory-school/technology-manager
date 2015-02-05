@@ -5,15 +5,37 @@ class ManagedDevice(models.Model):
   device_name = models.CharField(max_length=50)
   sync_address = models.CharField(max_length=50)
   gui_address = models.URLField(max_length=254)
-  deviceID = models.CharField(max_length=63, unique=True)
-  apiKey = models.CharField(max_length=32)
+  device_id = models.CharField(max_length=63, unique=True)
+  api_key = models.CharField(max_length=32)
+  
+  @property
+  def newConfigDict(self):
+    return {
+      'Addresses': [self.sync_address], 
+      'CertName': '',
+      'Compression': True,
+      'DeviceID': self.device_id,
+      'Introducer': False,
+      'Name': self.device_name,
+    }
+  
+  @property
+  def updateConfigDict(self):
+    return {
+      'Addresses': [self.sync_address], 
+      'DeviceID': self.device_id,
+      'Name': self.device_name,
+    }
   
   def __str__(self):
     return self.device_name
   
 class Folder(models.Model):
-  name = models.CharField(max_length=50)
+  name = models.CharField(max_length=50, unique=True)
   relative_path = models.CharField(max_length=100)
+  
+  class Meta:
+    ordering = ('name', )
   
   def __str__(self):
     return self.name
@@ -21,6 +43,7 @@ class Folder(models.Model):
 class FolderPath(models.Model):
   device = models.ForeignKey(ManagedDevice)
   local_path = models.CharField(max_length=254)
+  rescan_interval = models.IntegerField(default=60)
   
   folders = models.ManyToManyField(Folder, blank=True)
   
@@ -28,10 +51,28 @@ class FolderPath(models.Model):
     return "%s: %s" % (self.device.device_name, self.local_path)
 
 class StubDevice(models.Model):
-  deviceID = models.CharField(max_length=63, unique=True)
-  name = models.CharField(max_length=50)
+  device_id = models.CharField(max_length=63, unique=True)
+  device_name = models.CharField(max_length=50)
   
   folders = models.ManyToManyField(Folder, blank=True)
   
+  @property
+  def newConfigDict(self):
+    return {
+      'Addresses': ['dynamic'], 
+      'CertName': '',
+      'Compression': True,
+      'DeviceID': self.device_id,
+      'Introducer': False,
+      'Name': self.device_name,
+    }
+  
+  @property
+  def updateConfigDict(self):
+    return {
+      'DeviceID': self.device_id,
+      'Name': self.device_name,
+    }
+  
   def __str__(self):
-    return self.name
+    return self.device_name
