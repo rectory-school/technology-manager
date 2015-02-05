@@ -12,13 +12,20 @@ class ManagedDeviceAdmin(admin.ModelAdmin):
 
 class SubDeviceAdmin(admin.ModelAdmin):
   filter_horizontal = ["folders"]
-
+  
+  def get_changeform_initial_data(self, request):
+    return {
+      'deviceID': request.GET.get('deviceID'),
+      'name': request.GET.get('name'),
+      'folders': models.Folder.objects.filter(name__in=request.GET.getlist('folder'))
+    }
+    
 class FolderAdmin(admin.ModelAdmin):
   fields = ['name', 'relative_path', 'folderPaths', 'stubDevices']
   readonly_fields = ('folderPaths', 'stubDevices')
 
   def folderPaths(self, o):
-    return ", ".join(map(str, models.FolderPath.objects.filter(folders=o)))
+    return "\n".join(map(str, models.FolderPath.objects.filter(folders=o)))
     
   def stubDevices(self, o):
     return ", ".join(map(str, models.StubDevice.objects.filter(folders=o)))
