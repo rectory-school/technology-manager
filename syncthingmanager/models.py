@@ -37,6 +37,20 @@ class Folder(models.Model):
   class Meta:
     ordering = ('name', )
   
+  @property
+  def deviceIDs(self):
+    managedDevices = ManagedDevice.objects.filter(folderpath__folders=self)
+    stubDevices = StubDevice.objects.filter(folders=self)
+    
+    return set([device.device_id for device in managedDevices]) | set([device.device_id for device in stubDevices])
+  
+  @property
+  def updateConfigDict(self):
+    devices = [{'DeviceID': deviceID} for deviceID in self.deviceIDs]
+    
+    return {'ID': self.name, 'Devices': devices}
+  
+  
   def __str__(self):
     return self.name
 

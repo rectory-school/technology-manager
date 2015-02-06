@@ -146,10 +146,7 @@ def updateConfig(device):
     folder = newFoldersByID[folderID]
     
     #This is probably ineffecient and will generate like 8000 SQL queries. Right now I don't care.
-    managedDevices = ManagedDevice.objects.filter(folderpath__folders=folder)
-    stubDevices = StubDevice.objects.filter(folders=folder)
-    
-    newDeviceIDs = set([device.device_id for device in managedDevices]) | set([device.device_id for device in stubDevices])
+    newDeviceIDs = folder.deviceIDs
     currentDeviceIDs = set([device["DeviceID"] for device in originalConfig["Devices"]])
     
     if newDeviceIDs != currentDeviceIDs:
@@ -182,11 +179,7 @@ def updateConfig(device):
     
     folder = newFoldersByID[folderID]
     
-    #This is probably ineffecient and will generate like 8000 SQL queries. Right now I don't care.
-    managedDevices = ManagedDevice.objects.filter(folderpath__folders=folder)
-    stubDevices = StubDevice.objects.filter(folders=folder)
-    
-    deviceIDs = set([device.device_id for device in managedDevices]) | set([device.device_id for device in stubDevices])
+    deviceIDs = folder.deviceIDs
     
     folderDict = {
       'Copiers': 1,
