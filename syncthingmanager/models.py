@@ -1,4 +1,6 @@
 from django.db import models
+from adminsortable.models import Sortable
+from adminsortable.fields import SortableForeignKey
 
 # Create your models here.
 class ManagedDevice(models.Model):
@@ -54,6 +56,16 @@ class Folder(models.Model):
   def __str__(self):
     return self.name
 
+class FolderIgnore(Sortable):
+  class Meta(Sortable.Meta):
+    pass
+          
+  folder = SortableForeignKey(Folder)
+  ignore_line = models.CharField(max_length=254)
+  
+  def __str__(self):
+    return self.ignore_line
+    
 class FolderPath(models.Model):
   device = models.ForeignKey(ManagedDevice)
   local_path = models.CharField(max_length=254)

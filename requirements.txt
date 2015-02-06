@@ -6,3 +6,4 @@ biplist
 requests
 pillow
 xlrd
+django-admin-sortable

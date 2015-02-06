@@ -31,7 +31,7 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 )
 
-THIRD_PARTY_APPS = tuple()
+THIRD_PARTY_APPS = ('adminsortable', )
 
 INTERNAL_APPS = (
 	'munkimanager', 
