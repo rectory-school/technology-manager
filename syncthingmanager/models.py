@@ -86,6 +86,7 @@ class StubDevice(models.Model):
     return {
       'DeviceID': self.device_id,
       'Name': self.device_name,
+      'Addresses': ['dynamic']
     }
   
   def __str__(self):
