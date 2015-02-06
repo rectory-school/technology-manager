@@ -1,5 +1,6 @@
 from django.contrib import admin
 from syncthingmanager import models
+from adminsortable.admin import NonSortableParentAdmin, SortableStackedInline
 
 class FolderPathInline(admin.StackedInline):
   model = models.FolderPath
@@ -16,12 +17,17 @@ class SubDeviceAdmin(admin.ModelAdmin):
   
   def get_changeform_initial_data(self, request):
     return {
-      'deviceID': request.GET.get('deviceID'),
-      'name': request.GET.get('name'),
+      'device_id': request.GET.get('deviceID'),
+      'device_name': request.GET.get('name'),
       'folders': models.Folder.objects.filter(name__in=request.GET.getlist('folder'))
     }
-    
-class FolderAdmin(admin.ModelAdmin):
+
+class FolderIgnoreInline(SortableStackedInline):
+  model = models.FolderIgnore
+  extra = 0
+  
+class FolderAdmin(NonSortableParentAdmin):
+  inlines = [FolderIgnoreInline]
   fields = ['name', 'relative_path', 'folderPaths', 'stubDevices']
   readonly_fields = ('folderPaths', 'stubDevices')
 
