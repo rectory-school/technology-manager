@@ -12,6 +12,7 @@ class ManagedDeviceAdmin(admin.ModelAdmin):
 
 class SubDeviceAdmin(admin.ModelAdmin):
   filter_horizontal = ["folders"]
+  readonly_fields = ["missing_folders", "last_configured", "last_configure_result"]
   
   def get_changeform_initial_data(self, request):
     return {

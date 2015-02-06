@@ -69,6 +69,10 @@ class StubDevice(models.Model):
   device_name = models.CharField(max_length=50)
   
   folders = models.ManyToManyField(Folder, blank=True)
+  missing_folders = models.ManyToManyField(Folder, related_name='missing_on')
+  
+  last_configured = models.DateTimeField(blank=True, null=True)
+  last_configure_result = models.IntegerField(blank=True, null=True)
   
   @property
   def newConfigDict(self):
