@@ -1,6 +1,6 @@
 from django.contrib import admin
 from syncthingmanager import models
-from adminsortable.admin import NonSortableParentAdmin, SortableStackedInline
+from adminsortable.admin import NonSortableParentAdmin, SortableStackedInline, SortableAdmin
 
 class FolderPathInline(admin.StackedInline):
   model = models.FolderPath
@@ -44,3 +44,4 @@ class FolderAdmin(NonSortableParentAdmin):
 admin.site.register(models.ManagedDevice, ManagedDeviceAdmin)
 admin.site.register(models.Folder, FolderAdmin)
 admin.site.register(models.StubDevice, SubDeviceAdmin)
+admin.site.register(models.MasterIgnoreLine, SortableAdmin)

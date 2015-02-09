@@ -4,14 +4,26 @@ import requests
 import os
 import copy
 import json
+import time
 
-from syncthingmanager.models import Folder, StubDevice, ManagedDevice, FolderPath
+from syncthingmanager.models import Folder, StubDevice, ManagedDevice, FolderPath, MasterIgnoreLine
 
 def pathsEqual(*paths):
   def normalizePath(p):
     return p.replace("\\", "/")
   
   return len(set(map(normalizePath, paths))) == 1
+
+def pingWait(device):
+  #Wait for ping response  
+  while True:
+    try:
+      req = getRequest(device, "ping")
+      if req["ping"] == "pong":
+        return
+    except Exception, e:
+      print "No ping response yet: %s" % e
+      time.sleep(1)
 
 def getRequest(device, call, data=None):
   url = "%srest/%s" % (device.gui_address, call)
@@ -35,7 +47,36 @@ def getRequest(device, call, data=None):
 def getConfig(device):
   return getRequest(device, "config")
 
+def getIgnores(device, folder):
+  req = getRequest(device, "ignores?folder=%s" % folder)
+  
+  ignores = req["ignore"]
+
+  if ignores:
+    return ignores
+    
+  return []
+
+def updateIgnores(device, folder):
+  currentIgnores = getIgnores(device, folder)
+  oFolder = Folder.objects.get(name=folder)
+  
+  newIgnores = [o.ignore_line for o in MasterIgnoreLine.objects.all()]
+  
+  for ignoreLine in [o.ignore_line for o in oFolder.folderignore_set.all()]:
+    if not ignoreLine in newIgnores:
+      newIgnores.append(ignoreLine)
+  
+  if currentIgnores != newIgnores:
+    print "Updating ignores for %s on %s" % (folder, device)
+    
+    data = {'ignore': list(newIgnores)}
+  
+    req = getRequest(device, "ignores?folder=%s" % folder, data=json.dumps(data))
+  
 def updateConfig(device):
+  pingWait(device)
+  
   config = getConfig(device)
   originalDevice = device
   
@@ -203,5 +244,17 @@ def updateConfig(device):
     print "Updating and reloading config"
     print getRequest(originalDevice, "config", data=json.dumps(config))
     print getRequest(originalDevice, "restart", data={})
+    pingWait(originalDevice)
+    
+    #This is a bit of a hack, but hopefully it works nicely.
+    time.sleep(15)
   
+  pingWait(originalDevice)
+  
+  #newFolderIDs contains all the folders that the remote server is suppossed to have, which it now has.
+  print newFolderIDs
+  for folderName in newFolderIDs:
+    updateIgnores(originalDevice, folderName)
+  
+  pingWait(originalDevice)
   

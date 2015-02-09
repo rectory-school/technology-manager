@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import datetime
 
-from syncthingmanager.models import Folder, FolderPath, ManagedDevice, StubDevice
+from syncthingmanager.models import Folder, FolderPath, ManagedDevice, StubDevice, MasterIgnoreLine
 
 # Create your views here.
 def stubDeviceData(request, id):
@@ -21,7 +21,8 @@ def stubDeviceData(request, id):
   data = {
     'devices': {},
     'folders': {},
-    'allFolderIDs': []
+    'allFolderIDs': [],
+    'ignores': {}
   }
   
   for objectType in (managedDevices, stubDevices):
@@ -30,6 +31,14 @@ def stubDeviceData(request, id):
   
   for folder in folders:
     data['folders'][folder.name] = folder.updateConfigDict
+    
+    ignores = [o.ignore_line for o in MasterIgnoreLine.objects.all()]
+    
+    for folderIgnore in [o.ignore_line for o in folder.folderignore_set.all()]:
+      if folderIgnore not in ignores:
+        ignores.append(folderIgnore)
+    
+    data['ignores'][folder.name] = ignores
   
   data['allFolderIDs'] = [folder.name for folder in allFolders]
   

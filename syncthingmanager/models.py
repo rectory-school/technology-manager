@@ -2,6 +2,12 @@ from django.db import models
 from adminsortable.models import Sortable
 from adminsortable.fields import SortableForeignKey
 
+class MasterIgnoreLine(Sortable):
+  ignore_line = models.CharField(max_length=254)
+  
+  def __str__(self):
+    return self.ignore_line
+
 # Create your models here.
 class ManagedDevice(models.Model):
   device_name = models.CharField(max_length=50)
