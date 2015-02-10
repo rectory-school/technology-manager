@@ -1,6 +1,7 @@
 from django.contrib import admin
 from syncthingmanager import models
 from adminsortable.admin import NonSortableParentAdmin, SortableStackedInline, SortableAdmin
+import syncthingmanager.lib
 
 class FolderPathInline(admin.StackedInline):
   model = models.FolderPath
@@ -10,6 +11,14 @@ class FolderPathInline(admin.StackedInline):
 
 class ManagedDeviceAdmin(admin.ModelAdmin):
   inlines = [FolderPathInline]
+  actions = ['updateSyncthing']
+  
+  def updateSyncthing(self, request, queryset):
+    for managedDevice in queryset:
+      syncthingmanager.lib.updateConfig(managedDevice)
+  
+  updateSyncthing.short_description = "Update SyncThing configuration on selected devices"
+  
 
 class SubDeviceAdmin(admin.ModelAdmin):
   filter_horizontal = ["folders"]
