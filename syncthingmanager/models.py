@@ -19,20 +19,20 @@ class ManagedDevice(models.Model):
   @property
   def newConfigDict(self):
     return {
-      'Addresses': [self.sync_address], 
-      'CertName': '',
-      'Compression': "metadata",
-      'DeviceID': self.device_id,
-      'Introducer': False,
-      'Name': self.device_name,
+      'addresses': [self.sync_address], 
+      'certName': '',
+      'compression': "metadata",
+      'deviceID': self.device_id,
+      'introducer': False,
+      'name': self.device_name,
     }
   
   @property
   def updateConfigDict(self):
     return {
-      'Addresses': [self.sync_address], 
-      'DeviceID': self.device_id,
-      'Name': self.device_name,
+      'addresses': [self.sync_address], 
+      'deviceID': self.device_id,
+      'name': self.device_name,
     }
   
   def __str__(self):
@@ -54,9 +54,9 @@ class Folder(models.Model):
   
   @property
   def updateConfigDict(self):
-    devices = [{'DeviceID': deviceID} for deviceID in self.deviceIDs]
+    devices = [{'deviceID': deviceID} for deviceID in self.deviceIDs]
     
-    return {'ID': self.name, 'Devices': devices}
+    return {'id': self.name, 'devices': devices}
   
   
   def __str__(self):
@@ -95,20 +95,20 @@ class StubDevice(models.Model):
   @property
   def newConfigDict(self):
     return {
-      'Addresses': ['dynamic'], 
-      'CertName': '',
-      'Compression': "metadata",
-      'DeviceID': self.device_id,
-      'Introducer': False,
-      'Name': self.device_name,
+      'addresses': ['dynamic'], 
+      'certName': '',
+      'compression': "metadata"
+      'deviceID': self.device_id,
+      'introducer': False,
+      'name': self.device_name,
     }
   
   @property
   def updateConfigDict(self):
     return {
-      'DeviceID': self.device_id,
-      'Name': self.device_name,
-      'Addresses': ['dynamic']
+      'deviceID': self.device_id,
+      'name': self.device_name,
+      'addresses': ['dynamic']
     }
   
   def __str__(self):

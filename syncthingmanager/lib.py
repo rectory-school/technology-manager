@@ -18,7 +18,7 @@ def pingWait(device):
   #Wait for ping response  
   while True:
     try:
-      req = getRequest(device, "ping")
+      req = getRequest(device, "system/ping")
       if req["ping"] == "pong":
         return
     except Exception, e:
@@ -45,10 +45,10 @@ def getRequest(device, call, data=None):
     return r.text
   
 def getConfig(device):
-  return getRequest(device, "config")
+  return getRequest(device, "system/config")
 
 def getIgnores(device, folder):
-  req = getRequest(device, "ignores?folder=%s" % folder)
+  req = getRequest(device, "db/ignores?folder=%s" % folder)
   
   ignores = req["ignore"]
 
@@ -72,7 +72,7 @@ def updateIgnores(device, folder):
     
     data = {'ignore': list(newIgnores)}
   
-    req = getRequest(device, "ignores?folder=%s" % folder, data=json.dumps(data))
+    req = getRequest(device, "db/ignores?folder=%s" % folder, data=json.dumps(data))
   
 def updateConfig(device):
   pingWait(device)
@@ -97,9 +97,9 @@ def updateConfig(device):
   newDevicesByID = {}
   
   #Note the current devices and where they are, so I can delete them by position later
-  for i, device in enumerate(config["Devices"]):
-    devicesByID[device["DeviceID"]] = device
-    devicePositionsByID[device["DeviceID"]] = i
+  for i, device in enumerate(config["devices"]):
+    devicesByID[device["deviceID"]] = device
+    devicePositionsByID[device["deviceID"]] = i
   
   #All the devices we should have
   for deviceSet in (relevantManagedDevices, relevantStubDevices):
@@ -129,27 +129,27 @@ def updateConfig(device):
     #Compare each key individually
     for key in newConfig:
       #Only update the name if it's for our own device
-      if deviceID == originalDevice.device_id and key != 'Name':
+      if deviceID == originalDevice.device_id and key != 'name':
         continue
         
       if originalConfig[key] != newConfig[key]:
         print "Updating %s on %s from '%s' to '%s'" % (key, deviceID, originalConfig[key], newConfig[key])
         update = True
-        config["Devices"][configPosition][key] = newConfig[key]
+        config["devices"][configPosition][key] = newConfig[key]
   
   
   #Look at my extra devices, before we change any other positions. Iterate them backwards so that we don't
   #delete the wrong entries      
   extraDevicePositions = sorted([devicePositionsByID[deviceID] for deviceID in extraDeviceIDs], reverse=True)
   for devicePosition in extraDevicePositions:
-    print "Removing device %s" % (config["Devices"][devicePosition]["DeviceID"])
+    print "Removing device %s" % (config["devices"][devicePosition]["deviceID"])
     update = True
-    del config["Devices"][devicePosition] 
+    del config["devices"][devicePosition] 
   
   #Add the missing devices
   for deviceID in missingDeviceIDs:
     update = True
-    config["Devices"].append(newDevicesByID[deviceID].newConfigDict)
+    config["devices"].append(newDevicesByID[deviceID].newConfigDict)
     print "Adding device %s" % deviceID
   
   foldersByID = {}
@@ -157,9 +157,9 @@ def updateConfig(device):
   
   newFoldersByID = {}
   
-  for i, folder in enumerate(config["Folders"]):
-    foldersByID[folder["ID"]] = folder
-    folderPositionsByID[folder["ID"]] = i
+  for i, folder in enumerate(config["folders"]):
+    foldersByID[folder["id"]] = folder
+    folderPositionsByID[folder["id"]] = i
   
   for folder in relevantFolders:
     newFoldersByID[folder.name] = folder
@@ -188,32 +188,32 @@ def updateConfig(device):
     
     #This is probably ineffecient and will generate like 8000 SQL queries. Right now I don't care.
     newDeviceIDs = folder.deviceIDs
-    currentDeviceIDs = set([device["DeviceID"] for device in originalConfig["Devices"]])
+    currentDeviceIDs = set([device["deviceID"] for device in originalConfig["devices"]])
     
     if newDeviceIDs != currentDeviceIDs:
       print "Replacing device IDs"
       update = True
-      config["Folders"][folderPosition]["Devices"]=[{'DeviceID': deviceID} for deviceID in newDeviceIDs]
+      config["folders"][folderPosition]["devices"]=[{'deviceID': deviceID} for deviceID in newDeviceIDs]
     
     newPath = os.path.join(folderPath.local_path, folder.relative_path)
-    oldPath = originalConfig["Path"]
+    oldPath = originalConfig["path"]
     
     if not pathsEqual(newPath, oldPath):
       #TODO: Raise a red flag on this. We shouldn't be moving paths.
       print "Moving path"
-      config["Folders"][folderPosition]["Path"] = newPath
+      config["folders"][folderPosition]["path"] = newPath
       update = True
       
-    if not originalConfig["RescanIntervalS"] == folderPath.rescan_interval:
+    if not originalConfig["rescanIntervalS"] == folderPath.rescan_interval:
       print "Adjusting rescan interval"
-      config["Folders"][folderPosition]["RescanIntervalS"] = folderPath.rescan_interval
+      config["folders"][folderPosition]["rescanIntervalS"] = folderPath.rescan_interval
       update = True
     
   extraFolderPositions = sorted([folderPositionsByID[folderID] for folderID in extraFolderIDs], reverse=True)
   for folderPosition in extraFolderPositions:
-    print "Removing folder %s" % (config["Folders"][folderPosition]["ID"])
+    print "Removing folder %s" % (config["folders"][folderPosition]["id"])
     update = True
-    del config["Folders"][folderPosition]
+    del config["folders"][folderPosition]
     
   for folderID in missingFolderIDs:
     print "Adding folder %s" % folderID
@@ -223,27 +223,27 @@ def updateConfig(device):
     deviceIDs = folder.deviceIDs
     
     folderDict = {
-      'Copiers': 1,
-      'Devices': [{'DeviceID': deviceID} for deviceID in deviceIDs],
-      'Hashers': 0,
-      'ID': folder.name,
-      'IgnorePerms': False,
-      'Invalid': '',
-      'LenientMtimes': False,
-      'Path': os.path.join(folderPath.local_path, folder.relative_path),
-      'Pullers': 16,
-      'ReadOnly': False,
-      'RescanIntervalS': folderPath.rescan_interval,
-      'Versioning': {u'Params': {}, u'Type': u''}
+      'copiers': 1,
+      'devices': [{'DeviceID': deviceID} for deviceID in deviceIDs],
+      'hashers': 0,
+      'id': folder.name,
+      'ignorePerms': False,
+      'invalid': '',
+      'lenientMtimes': False,
+      'path': os.path.join(folderPath.local_path, folder.relative_path),
+      'pullers': 16,
+      'readOnly': False,
+      'rescanIntervalS': folderPath.rescan_interval,
+      'versioning': {u'Params': {}, u'Type': u''}
     }
     
-    config["Folders"].append(folderDict)
+    config["folders"].append(folderDict)
     update = True
     
   if update:
     print "Updating and reloading config"
-    print getRequest(originalDevice, "config", data=json.dumps(config))
-    print getRequest(originalDevice, "restart", data={})
+    print getRequest(originalDevice, "system/config", data=json.dumps(config))
+    print getRequest(originalDevice, "system/restart", data={})
     pingWait(originalDevice)
     
     #This is a bit of a hack, but hopefully it works nicely.
