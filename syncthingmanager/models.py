@@ -21,7 +21,7 @@ class ManagedDevice(models.Model):
     return {
       'Addresses': [self.sync_address], 
       'CertName': '',
-      'Compression': True,
+      'Compression': "metadata",
       'DeviceID': self.device_id,
       'Introducer': False,
       'Name': self.device_name,
@@ -97,7 +97,7 @@ class StubDevice(models.Model):
     return {
       'Addresses': ['dynamic'], 
       'CertName': '',
-      'Compression': True,
+      'Compression': "metadata",
       'DeviceID': self.device_id,
       'Introducer': False,
       'Name': self.device_name,
