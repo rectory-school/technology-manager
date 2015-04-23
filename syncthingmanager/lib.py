@@ -178,7 +178,7 @@ def updateConfig(device):
     #added to more than one path on this server
     
     folderPath = FolderPath.objects.get(folders__name=folderID, device=originalDevice)
-    
+ 
     print "Processing %s" % folderID
     #Where the folder is in the config list so we can reference it by position
     folderPosition = folderPositionsByID[folderID]
@@ -222,6 +222,8 @@ def updateConfig(device):
     
     deviceIDs = folder.deviceIDs
     
+    folderPath = FolderPath.objects.get(folders__name=folderID, device=originalDevice) 
+ 
     folderDict = {
       'copiers': 1,
       'devices': [{'DeviceID': deviceID} for deviceID in deviceIDs],
