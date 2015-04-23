@@ -97,7 +97,7 @@ class StubDevice(models.Model):
     return {
       'addresses': ['dynamic'], 
       'certName': '',
-      'compression': "metadata"
+      'compression': 'metadata',
       'deviceID': self.device_id,
       'introducer': False,
       'name': self.device_name,
