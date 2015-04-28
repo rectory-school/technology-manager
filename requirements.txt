@@ -6,4 +6,5 @@ biplist
 requests
 pillow
 xlrd
-django-admin-sortabledjango-admin-sortable==1.8.3
+django-admin-sortable==1.8.3
+django-rq==0.8.0

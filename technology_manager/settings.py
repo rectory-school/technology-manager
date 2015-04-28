@@ -20,6 +20,15 @@ from environment import *
 SECRET_KEY = '_&d5-snr-p5i)7wf!4-lolafr$56n-2&31132xov=4r-=+l6a)'
 
 
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 360,
+    },
+}
+
 # Application definition
 
 DJANGO_APPS = (
@@ -31,7 +40,7 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 )
 
-THIRD_PARTY_APPS = ('adminsortable', )
+THIRD_PARTY_APPS = ('adminsortable', "django_rq",)
 
 INTERNAL_APPS = (
 	'munkimanager', 
