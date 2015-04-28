@@ -1,4 +1,4 @@
-django==1.7.1
+django==1.8
 psycopg2
 ago
 pytz
@@ -6,4 +6,4 @@ biplist
 requests
 pillow
 xlrd
-django-admin-sortable
+django-admin-sortabledjango-admin-sortable==1.8.3
