@@ -7,8 +7,11 @@ import json
 import time
 import logging
 
-from syncthingmanager.models import Folder, StubDevice, ManagedDevice, FolderPath, MasterIgnoreLine
+import django_rq
 
+from requests.exceptions import SSLError
+
+from syncthingmanager.models import Folder, StubDevice, ManagedDevice, FolderPath, MasterIgnoreLine
 from syncthingmanager.configupdater import updateConfigDevices, updateConfigFolders, getRelevantFolders
 
 logger = logging.getLogger(__name__)
@@ -20,7 +23,9 @@ def pingWait(device):
       req = getRequest(device, "system/ping")
       if req["ping"] == "pong":
         return
-    except Exception, e:
+    except SSLError as e:
+      raise
+    except Exception as e:
       logger.debug("No ping response yet: %s" % e)
       time.sleep(1)
 
@@ -34,9 +39,9 @@ def getRequest(device, call, data=None):
     func = requests.get
   
   if data:  
-    r = func(url, data=data, headers=headers, verify=False)
+    r = func(url, data=data, headers=headers)
   else:
-    r = func(url, headers=headers, verify=False)
+    r = func(url, headers=headers)
   
   try:
     return r.json()
@@ -108,6 +113,3 @@ def updateDevice(device):
   
   for folderPath, folder in getRelevantFolders(device).values():
     updateIgnores(device, folder)
-  
-  
-  
