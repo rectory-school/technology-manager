@@ -113,3 +113,10 @@ class StubDevice(models.Model):
   
   def __str__(self):
     return self.device_name
+
+class StubDeviceConfigurationFail(models.Model):
+  device_id = models.CharField(max_length=63)
+  device_name = models.CharField(max_length=50, blank=True)
+  user_name = models.CharField(max_length=50, blank=True)
+  ip = models.GenericIPAddressField(blank=True, null=True)
+  datetime = models.DateTimeField(auto_now_add=True)

@@ -2,13 +2,25 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.http import Http404
+
 import datetime
 
-from syncthingmanager.models import Folder, FolderPath, ManagedDevice, StubDevice, MasterIgnoreLine
+from ipware.ip import get_ip
+
+from syncthingmanager.models import Folder, FolderPath, ManagedDevice, StubDevice, MasterIgnoreLine, StubDeviceConfigurationFail
 
 # Create your views here.
 def stubDeviceData(request, id):
-  stubDevice = StubDevice.objects.get(device_id=id)
+  try:
+    stubDevice = StubDevice.objects.get(device_id=id)
+  except StubDevice.DoesNotExist:
+    configFail = StubDeviceConfigurationFail()
+    configFail.device_id = id
+    configFail.ip = get_ip(request)
+    configFail.save()
+    
+    raise Http404("Stub device ID does not exist")
   
   folders = stubDevice.folders.all()
   relevantFolderPaths = FolderPath.objects.filter(folders__in=folders).distinct()
