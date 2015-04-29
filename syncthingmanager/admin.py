@@ -16,7 +16,8 @@ class ManagedDeviceAdmin(admin.ModelAdmin):
   
   def updateSyncthing(self, request, queryset):
     for managedDevice in queryset:
-      django_rq.enqueue(syncthingmanager.lib.updateDevice, managedDevice)
+      queue = django_rq.get_queue('syncthing_configurator')
+      queue.enqueue(syncthingmanager.lib.updateDevice, managedDevice)
   
   updateSyncthing.short_description = "Update SyncThing configuration on selected devices"
   

@@ -21,12 +21,18 @@ SECRET_KEY = '_&d5-snr-p5i)7wf!4-lolafr$56n-2&31132xov=4r-=+l6a)'
 
 
 RQ_QUEUES = {
-    'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-        'DEFAULT_TIMEOUT': 360,
-    },
+  'default': {
+    'HOST': 'localhost',
+    'PORT': 6379,
+    'DB': 0,
+    'DEFAULT_TIMEOUT': 360,
+  },
+  'syncthing_configurator': {
+    'HOST': 'localhost',
+    'PORT': 6379,
+    'DB': 0,
+    'DEFAULT_TIMEOUT': 600
+  }
 }
 
 # Application definition
