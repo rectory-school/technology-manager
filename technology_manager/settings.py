@@ -93,6 +93,34 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGGING = {
+  'version': 1,
+  'disable_existing_loggers': False,
+  'formatters': {
+    'rq_console': {
+      'format': '%(asctime)s %(message)s',
+      'datefmt': '%H:%M:%S',
+    },
+  },
+  'handlers': {
+    'rq_console': {
+      'level': 'INFO',
+      'class': 'rq.utils.ColorizingStreamHandler',
+      'formatter': 'rq_console',
+      'exclude': ['%(asctime)s'],
+      
+    },
+    'mail_admins': {
+      'level': 'ERROR',
+      'class': 'django.utils.log.AdminEmailHandler',
+    }
+  },
+  'loggers': {
+    'rq.worker': {
+      'handlers': ['rq_console', 'mail_admins']
+    }
+  }
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
