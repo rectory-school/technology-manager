@@ -24,6 +24,7 @@ def pingWait(device):
       if req["ping"] == "pong":
         return
     except SSLError as e:
+      #Nonrecoverable error
       raise
     except Exception as e:
       logger.debug("No ping response yet: %s" % e)
