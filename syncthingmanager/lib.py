@@ -9,6 +9,8 @@ import logging
 
 import django_rq
 
+from datetime import datetime, timedelta
+
 from requests.exceptions import SSLError
 
 from syncthingmanager.models import Folder, StubDevice, ManagedDevice, FolderPath, MasterIgnoreLine
@@ -16,9 +18,15 @@ from syncthingmanager.configupdater import updateConfigDevices, updateConfigFold
 
 logger = logging.getLogger(__name__)
 
-def pingWait(device):
-  #Wait for ping response  
+def pingWait(device, timeout=timedelta(seconds=60)):
+  #Wait for ping response
+  
+  startTime = datetime.now()
+  
   while True:
+    if timeout and datetime.now() - startTime > timeout:
+      raise PingWaitTimeout("Ping timeout failed for {device_name}".format(device_name=device.device_name))
+      
     try:
       req = getRequest(device, "system/ping")
       if req["ping"] == "pong":
@@ -114,3 +122,6 @@ def updateDevice(device):
   
   for folderPath, folder in getRelevantFolders(device).values():
     updateIgnores(device, folder)
+
+class PingWaitTimeout(Exception):
+  pass
