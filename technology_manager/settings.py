@@ -28,6 +28,21 @@ AWS_SECRET_ACCESS_KEY = 'CQHAFVN6Rm7EMt+4LvZ+rPP2XQcqT163cTdSWQWT'
 
 SERVER_EMAIL = 'technology@rectoryschool.org'
 
+RQ_QUEUES = {
+  'default': {
+    'HOST': 'localhost',
+    'PORT': 6379,
+    'DB': 0,
+    'DEFAULT_TIMEOUT': 360,
+  },
+  'syncthing_configurator': {
+    'HOST': 'localhost',
+    'PORT': 6379,
+    'DB': 0,
+    'DEFAULT_TIMEOUT': 600
+  }
+}
+
 # Application definition
 
 DJANGO_APPS = (
@@ -39,7 +54,7 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 )
 
-THIRD_PARTY_APPS = ('adminsortable', )
+THIRD_PARTY_APPS = ('adminsortable', "django_rq",)
 
 INTERNAL_APPS = (
 	'munkimanager', 

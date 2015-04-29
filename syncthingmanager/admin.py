@@ -2,6 +2,7 @@ from django.contrib import admin
 from syncthingmanager import models
 from adminsortable.admin import NonSortableParentAdmin, SortableStackedInline, SortableAdmin
 import syncthingmanager.lib
+import django_rq
 
 class FolderPathInline(admin.StackedInline):
   model = models.FolderPath
@@ -15,7 +16,8 @@ class ManagedDeviceAdmin(admin.ModelAdmin):
   
   def updateSyncthing(self, request, queryset):
     for managedDevice in queryset:
-      syncthingmanager.lib.updateConfig(managedDevice)
+      queue = django_rq.get_queue('syncthing_configurator')
+      queue.enqueue(syncthingmanager.lib.updateDevice, managedDevice)
   
   updateSyncthing.short_description = "Update SyncThing configuration on selected devices"
   
