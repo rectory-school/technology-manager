@@ -7,3 +7,4 @@ requests
 pillow
 xlrd
 django-admin-sortable==1.8.3
+django-ses==0.7.0
