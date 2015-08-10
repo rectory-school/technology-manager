@@ -117,7 +117,7 @@ def updateDevice(device):
   if update:
     uploadConfig(device, config)
     pingWait(device)
-    restart(device)
+#    restart(device)
     time.sleep(15)
   
   for folderPath, folder in getRelevantFolders(device).values():
