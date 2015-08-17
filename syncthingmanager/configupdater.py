@@ -109,7 +109,7 @@ def updateConfigDevices(device, originalConfig):
   #delete the wrong entries
   extraDevicePositions = sorted([existingDevices[deviceID][0] for deviceID in extraDeviceIDs], reverse=True)
   for devicePosition in extraDevicePositions:
-    logger.info("Removing device %s" % (config["devices"][devicePosition]["deviceID"]))
+    logger.info("Removing device %s" % (updatedConfig["devices"][devicePosition]["deviceID"]))
     update = True
     del updatedConfig["devices"][devicePosition] 
   
