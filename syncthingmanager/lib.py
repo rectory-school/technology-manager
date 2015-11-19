@@ -97,6 +97,15 @@ def restart(device):
   logger.debug(getRequest(device, "system/restart", data={}))
   pingWait(device)
 
+def conditionalRestart(device):
+    pingWait(device)
+    configInSync = getRequest(device, "system/config/insync")
+    
+    if not configInSync:
+        restart(device)
+    
+    pingWait(device)
+
 def updateDevice(device):
   pingWait(device)
   
@@ -117,7 +126,8 @@ def updateDevice(device):
   if update:
     uploadConfig(device, config)
     pingWait(device)
-#    restart(device)
+    conditionalRestart(device)
+    pingWait(device)
     time.sleep(15)
   
   for folderPath, folder in getRelevantFolders(device).values():
