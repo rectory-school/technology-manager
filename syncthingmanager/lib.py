@@ -48,9 +48,9 @@ def getRequest(device, call, data=None):
     func = requests.get
   
   if data:  
-    r = func(url, data=data, headers=headers)
+    r = func(url, data=data, headers=headers, verify=False)
   else:
-    r = func(url, headers=headers)
+    r = func(url, headers=headers, verify=False)
   
   try:
     return r.json()
