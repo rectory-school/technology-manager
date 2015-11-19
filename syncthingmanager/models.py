@@ -2,6 +2,13 @@ from django.db import models
 from adminsortable.models import Sortable
 from adminsortable.fields import SortableForeignKey
 
+class DiscoveryServer(models.Model):
+    description = models.CharField(max_length=50)
+    address = models.CharField(max_length=254)
+    
+    def __str__(self):
+        return self.description
+
 class MasterIgnoreLine(Sortable):
   ignore_line = models.CharField(max_length=254)
   

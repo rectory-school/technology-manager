@@ -8,7 +8,7 @@ import datetime
 
 from ipware.ip import get_ip
 
-from syncthingmanager.models import Folder, FolderPath, ManagedDevice, StubDevice, MasterIgnoreLine, StubDeviceConfigurationFail
+from syncthingmanager.models import Folder, FolderPath, ManagedDevice, StubDevice, MasterIgnoreLine, StubDeviceConfigurationFail, DiscoveryServer
 
 # Create your views here.
 def stubDeviceData(request, id):
@@ -34,7 +34,8 @@ def stubDeviceData(request, id):
     'devices': {},
     'folders': {},
     'allFolderIDs': [],
-    'ignores': {}
+    'ignores': {},
+    'discoveryServers': []
   }
   
   for objectType in (managedDevices, stubDevices):
@@ -53,6 +54,7 @@ def stubDeviceData(request, id):
     data['ignores'][folder.name] = ignores
   
   data['allFolderIDs'] = [folder.name for folder in allFolders]
+  data['discoveryServers'] = [server.address for server in DiscoveryServer.objects.all()]
   
   return JsonResponse(data)
 
