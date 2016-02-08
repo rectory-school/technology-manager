@@ -19,12 +19,10 @@ ADMINS = (('Adam Peacock', 'adam.peacock@rectoryschool.org'), )
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Override this in environment.py, this key should not be used in prod
 SECRET_KEY = '_&d5-snr-p5i)7wf!4-lolafr$56n-2&31132xov=4r-=+l6a)'
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
-
-AWS_ACCESS_KEY_ID = 'AKIAJID26NSVBB2J6UPA'
-AWS_SECRET_ACCESS_KEY = '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'
 
 SERVER_EMAIL = 'technology@rectoryschool.org'
 
