@@ -2,6 +2,7 @@ ago==0.0.9
 biplist==1.0.1
 boto==2.45.0
 click==6.6
+configparser==3.5.0
 dj-database-url==0.4.1
 Django==1.8.17
 django-admin-sortable==1.8.3
