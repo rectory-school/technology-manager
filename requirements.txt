@@ -1,4 +1,4 @@
-django==1.8.6
+django==1.8.17
 psycopg2
 ago
 pytz
