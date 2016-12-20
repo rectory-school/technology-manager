@@ -1,5 +1,5 @@
 """
-Django settings for technology_manager project.
+Django settings for core project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/dev/topics/settings/
@@ -71,9 +71,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'technology_manager.urls'
+ROOT_URLCONF = 'core.urls'
 
-WSGI_APPLICATION = 'technology_manager.wsgi.application'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
