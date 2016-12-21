@@ -37,7 +37,6 @@ STATIC_ROOT = config['files']['STATIC_ROOT']
 MEDIA_URL = config['urls']['MEDIA_URL']
 STATIC_URL = config['urls']['STATIC_URL']
 
-SERVE_STATIC = config.getboolean('debug', 'SERVE_STATIC')
 ALLOWED_HOSTS = [host.strip() for host in config['production'].get('ALLOWED_HOSTS', "").split(",")]
 
 STATICFILES_STORAGE = config['files']['STORAGE']
